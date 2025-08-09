@@ -5,23 +5,12 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
-    depends_on:
-      - db
-    environment:
-      - DATABASE_URL=mysql+pymysql://root:password@db:3306/fastapi_db
+    env_file:
+      - .env
 
   frontend:
     build: ./frontend
     ports:
-      - "8501:8501"
-    depends_on:
-      - backend
-
-  db:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: fastapi_db
-    ports:
-      - "3306:3306"
+      - "8550:8550"
+    env_file:
+      - .env
