@@ -1,0 +1,47 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from app.database import get_db
+from passlib.context import CryptContext
+from app.schemas import UserBase, UserLogin
+from app.models.user import User
+
+router = APIRouter()
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+@router.post("/register", response_model=UserBase)
+def register_user(user_data: UserBase, db: Session = Depends(get_db)):
+    # Verificar si el usuario ya existe
+    existing_user = db.query(User).filter(User.email == user_data.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Hashear la contraseña
+    hashed_password = pwd_context.hash(user_data.password)
+    new_user = User(
+        cedula=user_data.cedula,
+        nombre=user_data.nombre,
+        apellido=user_data.apellido,
+        email=user_data.email,
+        hashed_password=hashed_password,
+        rol=user_data.rol,
+        estado=user_data.estado
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "Registro exitoso"}
+    #return new_user
+
+@router.post("/login")
+def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
+    # Buscar por email o cedula
+    user = db.query(User).filter(
+        (User.email == credentials.identifier) | 
+        (User.cedula == credentials.identifier)
+    ).first()
+
+    if not user or not pwd_context.verify(credentials.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+
+    return {"message": "Login exitoso", "user_id": user.id}
