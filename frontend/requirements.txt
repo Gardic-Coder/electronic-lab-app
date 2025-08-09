@@ -1,3 +1,4 @@
 # frontend/requirements.txt
 flet
+request
 python-dotenv
