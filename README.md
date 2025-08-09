@@ -25,7 +25,6 @@ Sistema completo para la gestión de inventario, préstamos y usuarios en labora
 | Backend        | FastAPI (Python)                          |
 | Base de Datos  | MySQL                                     |
 | Autenticación  | JWT (JSON Web Tokens)                     |
-| Contenedores   | Docker (opcional)                         |
 | Almacenamiento | Sistema de archivos local / S3 (opcional) |
 
 ## Estructura del Proyecto
@@ -34,20 +33,17 @@ Sistema completo para la gestión de inventario, préstamos y usuarios en labora
 electronic-lab-app/
 ├── backend/         # API FastAPI (Python)
 │   ├── app/         
-│   │   ├── models/  # Modelos de base de datos
-│   │   ├── routers/ # Endpoints API
-│   │   ├── services/# Lógica de negocio
-│   │   └── utils/   # Utilidades comunes
-│   └── Dockerfile
+│       ├── models/  # Modelos de base de datos
+│       ├── routers/ # Endpoints API
+│       ├── services/# Lógica de negocio
+│       └── utils/   # Utilidades comunes
 │
 ├── frontend/        # UI Flet (Python)
 │   ├── src/
-│   │   ├── views/   # Pantallas de la aplicación
-│   │   ├── components/ # Componentes UI
-│   │   └── services/   # Conexión con backend
-│   └── Dockerfile
+│       ├── views/   # Pantallas de la aplicación
+│       ├── components/ # Componentes UI
+│       └── services/   # Conexión con backend
 │
-├── docker-compose.yml # Configuración Docker
 └── scripts/          # Scripts de inicialización DB
 ```
 
@@ -63,7 +59,6 @@ electronic-lab-app/
 ### Requisitos Previos
 - Python 3.9+
 - MySQL 8.0+
-- Docker y Docker Compose
 
 ### Pasos de Instalación
 
@@ -88,12 +83,21 @@ pip install -r frontend/requirements.txt
 3. Configurar base de datos:
 - Crear archivo `.env` en la raíz del proyecto:
 ```ini
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=electronic_lab
-DB_USER=root
-DB_PASSWORD=tu_contraseña
-SECRET_KEY=clave_secreta_jwt
+# 🔗 Conexión a la base de datos
+DATABASE_URL=mysql://<USUARIO>:<CONTRASEÑA>@<HOST>:<PUERTO>/<NOMBRE_BASE_DATOS>
+
+# 🔐 Clave secreta para firmar tokens JWT
+SECRET_KEY=<CLAVE_SECRETA_SEGURA>
+
+# ⚙️ Configuración general
+DEBUG=True
+ENV=development  # Cambiar a "production" en entorno de producción
+
+# 🌐 Configuración del frontend
+FRONTEND_PORT=8550
+
+# 🕒 Tiempo de expiración de los tokens JWT (en minutos)
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
 4. Inicializar base de datos:
@@ -111,15 +115,6 @@ uvicorn app.main:app --reload
 cd ../frontend
 flet run src/main.py
 ```
-
-### Opción con Docker
-```bash
-docker-compose up --build
-```
-
-Acceder a:
-- Backend: http://localhost:8000/docs
-- Frontend: http://localhost:5000
 
 ## Estado Actual del Proyecto
 
