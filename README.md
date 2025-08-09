@@ -119,9 +119,9 @@ flet run src/main.py
 ## Estado Actual del Proyecto
 
 ### ✅ Funcionalidades Completadas
+- Autenticación de usuarios (login/registro)[En backend]
 
 ### ⏳ En Progreso
-- Autenticación de usuarios (login/registro)
 - CRUD básico de componentes electrónicos
 - Sistema de categorización por tags
 - Solicitud de préstamos por estudiantes
