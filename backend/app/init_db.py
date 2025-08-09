@@ -1,3 +1,4 @@
+# backend/app/init_db.py
 from app.database import engine
 from app.models import user
 

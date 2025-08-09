@@ -1,3 +1,4 @@
+# backend/app/models/user.py
 from sqlalchemy import Column, Integer, String, Enum, TIMESTAMP
 from sqlalchemy.sql import func
 from app.database import Base

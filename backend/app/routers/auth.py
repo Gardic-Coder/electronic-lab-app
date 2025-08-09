@@ -1,9 +1,10 @@
+# backend/app/routers/auth.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
 from passlib.context import CryptContext
-from app.schemas.user import UserBase, UserLogin
+from app.schemas.user import UserResponse, UserLogin, UserCreate
 from sqlalchemy import or_
 
 router = APIRouter()
@@ -11,14 +12,19 @@ router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @router.post("/register")
-def register_user(user_data: UserBase, db: Session = Depends(get_db)):
+def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     # Verificar si el usuario ya existe
-    existing_user = db.query(User).filter(User.email == user_data.email).first()
+    existing_user = db.query(User).filter(
+        (User.email == user_data.email) | 
+        (User.cedula == user_data.cedula)
+    ).first()
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(status_code=400, detail="Email o cédula ya registrados")
     
     # Hashear la contraseña
     hashed_password = pwd_context.hash(user_data.password)
+
+    # Crear el nuevo usuario
     new_user = User(
         cedula=user_data.cedula,
         nombre=user_data.nombre,
