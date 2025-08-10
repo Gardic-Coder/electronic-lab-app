@@ -1,26 +1,18 @@
 import flet as ft
+from views.home import home_view
+
+
 
 
 def main(page: ft.Page):
-    counter = ft.Text("0", size=50, data=0)
+    def router(route):
+        page.clean()
+        if page.route == "/":
+            home_view(page)
+        #elif page.route == "/login":
+            #login_view(page)
 
-    def increment_click(e):
-        counter.data += 1
-        counter.value = str(counter.data)
-        counter.update()
+    page.on_route_change = router
+    page.go(page.route)
 
-    page.floating_action_button = ft.FloatingActionButton(
-        icon=ft.Icons.ADD, on_click=increment_click
-    )
-    page.add(
-        ft.SafeArea(
-            ft.Container(
-                counter,
-                alignment=ft.alignment.center,
-            ),
-            expand=True,
-        )
-    )
-
-
-ft.app(main)
+ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets", port=8550)
