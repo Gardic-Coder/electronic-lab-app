@@ -1,5 +1,5 @@
 # backend/app/routers/auth.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
@@ -58,7 +58,11 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
 
     # Verificar credenciales
     if not user or not pwd_context.verify(credentials.password, user.hashed_password):
-        return JSONResponse(status_code=200, content={"success": False})
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciales inválidas"
+        )
+
 
     # Simular token (puedes reemplazar con JWT luego)
     fake_token = f"token-{user.id}"

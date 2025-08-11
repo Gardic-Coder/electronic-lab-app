@@ -4,6 +4,9 @@ from views.login import login_view
 from views.home import home_view
 from views.register import register_view
 from views.dashboard import dashboard_view
+from views.dashboards.encargado import encargado_view
+from views.dashboards.admin import admin_view
+from views.dashboards.estudiante import estudiante_view
 
 def main(page: ft.Page):
     
@@ -23,6 +26,15 @@ def main(page: ft.Page):
         elif e.route == "/dashboard":
             page.views.append(dashboard_view(page))
 
+        elif e.route == "/dashboard/Admin":
+            page.views.append(admin_view(page))
+
+        elif e.route == "/dashboard/encargado":
+            page.views.append(encargado_view(page))
+
+        elif e.route == "/dashboard/estudiante":
+            page.views.append(estudiante_view(page))
+            
         else:
             page.views.append(home_view(page))
         

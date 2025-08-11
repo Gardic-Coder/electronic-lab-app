@@ -1,7 +1,7 @@
 import flet as ft
 from service.auth_context import auth_context
 
-def dashboard_view(page: ft.Page):
+def estudiante_view(page: ft.Page):
     if not auth_context.is_authenticated():
         page.go("/login")
         return 
@@ -12,27 +12,22 @@ def dashboard_view(page: ft.Page):
 
     user = auth_context.user_data
 
-    if user['rol'] == 'encargado':
-        page.go("/dashboard/encargado")
-    elif user['rol'] == 'admin':
-        page.go("/dashboard/Admin")
-    elif user['rol'] == 'estudiante':
-        page.go("/dashboard/estudiante")
-    else:
+    if user['rol'] != 'estudiante':
         page.go("/dashboard")
+        return
 
     controles = [
-            ft.Text("Bienvenido al Dashboard", style=ft.TextStyle(size=24)),
+            ft.Text("Bienvenido al Dashboard de Estudiante", style=ft.TextStyle(size=24)),
             ft.Text(f"Bienvenido {user['nombre']}"),
             ft.ElevatedButton("Cerrar sesión", on_click=logout)
             ]
 
     view = ft.View(
-        route="/dashboard",
+        route="/dashboard/estudiante",
         controls=controles,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
-        appbar=ft.AppBar(title=ft.Text("Dashboard"))
+        appbar=ft.AppBar(title=ft.Text("Dashboard Estudiante"))
     )
 
     return view

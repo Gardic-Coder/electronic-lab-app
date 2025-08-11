@@ -25,13 +25,20 @@ async def api_request(endpoint, method="GET", json=None, token=None):
             if response.status_code >= 200 and response.status_code < 300:
                 return response.json()
             else:
+                try:
+                    error_data = response.json()
+                    error_detail = error_data.get("detail", f"HTTP {response.status_code}")
+                except Exception:
+                    error_detail = response.text or f"HTTP {response.status_code}"
+
                 print(f"API responded with status {response.status_code}")
-                print("Response content:", response.text)
+                print("Error detail:", error_detail)
+
                 return {
                     "success": False,
-                    "error": f"HTTP {response.status_code}",
-                    "detail": response.text
+                    "error": error_detail
                 }
+
 
         except httpx.RequestError as e:
             print("API request error:", type(e).__name__)

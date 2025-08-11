@@ -41,10 +41,18 @@ def login_view(page: ft.Page):
             page.go("/dashboard")
         else:
             # Mostrar error general
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Credenciales incorrectas o usuario no encontrado."),
-                open=True
+            error_msg = response.get("error", "Credenciales incorrectas o usuario no encontrado.")
+            dialog = ft.AlertDialog(
+            title=ft.Text("Error"),
+            content=ft.Text(error_msg),
+            actions=[ft.TextButton("Cerrar", on_click=lambda e: dialog.dismiss())],
+                modal=True
             )
+
+            page.dialog = dialog
+            dialog.open = True
+            print("Credenciales invalidas. mensaje del frontend")
+
         page.update()
     
     def validate(e):
@@ -58,11 +66,12 @@ def login_view(page: ft.Page):
             show_errors(errors)
             return
         
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(login(e))
+        #loop = asyncio.new_event_loop()
+        #asyncio.set_event_loop(loop)
+        #loop.run_until_complete(login(e))
 
         #asyncio.create_task(login(e))  # ✅ Ejecuta la función async. Solo llama a login si todo está validado
+        asyncio.run(login(e))
 
     def show_errors(errors: dict):
         identifier_field.error_text = errors.get("identifier")
