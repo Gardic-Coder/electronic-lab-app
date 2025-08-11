@@ -5,7 +5,8 @@ from app.database import get_db
 from app.models.user import User
 from passlib.context import CryptContext
 from app.schemas.user import UserResponse, UserLogin, UserCreate
-from sqlalchemy import or_
+from fastapi.responses import JSONResponse
+#from sqlalchemy import or_
 
 router = APIRouter()
 
@@ -47,7 +48,29 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
         (User.cedula == credentials.identifier)
     ).first()
 
+    # Verificar credenciales
     if not user or not pwd_context.verify(credentials.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+        return JSONResponse(status_code=200, content={"success": False})
 
-    return {"message": "Login exitoso", "user_id": user.id}
+    # Simular token (puedes reemplazar con JWT luego)
+    fake_token = f"token-{user.id}"
+
+    # Convertir instancia de User a UserResponse
+    user_data = UserResponse(
+        id=user.id,
+        cedula=user.cedula,
+        nombre=user.nombre,
+        apellido=user.apellido,
+        email=user.email,
+        rol=user.rol,
+        estado=user.estado,
+        created_at=user.created_at,
+        updated_at=user.updated_at
+    )
+
+    # Construir respuesta
+    return {
+        "success": True,
+        "token": fake_token,
+        "user": user_data
+    }

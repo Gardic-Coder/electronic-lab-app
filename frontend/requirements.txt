@@ -1,4 +1,4 @@
 # frontend/requirements.txt
 flet
-request
+httpx
 python-dotenv

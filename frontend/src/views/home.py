@@ -1,9 +1,11 @@
+# frontend/src/views/home.py
 import flet as ft
+from service.auth_context import auth_context
 
 def home_view(page: ft.Page):
-    page.title = "Home"
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    if auth_context.is_authenticated():
+        page.go("/dashboard")
+        return 
     
     controles = [
             ft.Text("Laboratorio de Electronica", style=ft.TextStyle(size=24)),

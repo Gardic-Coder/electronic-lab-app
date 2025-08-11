@@ -5,7 +5,7 @@ from datetime import datetime
 
 # Esquema para CREACIÓN de usuario (input)
 class UserCreate(BaseModel):
-    cedula: str = Field(..., min_length=11, max_length=12)
+    cedula: str = Field(..., min_length=7, max_length=8)
     nombre: str = Field(..., min_length=2, max_length=50)
     apellido: str = Field(..., min_length=2, max_length=50)
     email: EmailStr

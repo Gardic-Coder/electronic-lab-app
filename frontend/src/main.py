@@ -1,7 +1,9 @@
+# frontend/src/main.py
 import flet as ft
 from views.login import login_view
 from views.home import home_view
 from views.register import register_view
+from views.dashboard import dashboard_view
 
 def main(page: ft.Page):
     
@@ -17,6 +19,9 @@ def main(page: ft.Page):
 
         elif e.route == "/register":
             page.views.append(register_view(page))
+        
+        elif e.route == "/dashboard":
+            page.views.append(dashboard_view(page))
 
         else:
             page.views.append(home_view(page))
@@ -28,6 +33,8 @@ def main(page: ft.Page):
         page.views.pop()
         top_view = page.views[-1]
         page.go(top_view.route)
+        page.update()
+
 
     # Configurar manejadores de eventos
     page.on_route_change = route_change
