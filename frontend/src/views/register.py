@@ -23,7 +23,6 @@ def register_view(page: ft.Page):
         surname = surname_field.value
         email = email_field.value
         password = password_field.value
-        confirm_password = confirm_password_field.value
 
         # Enviar datos al backend
         response = await api_request(
@@ -41,20 +40,20 @@ def register_view(page: ft.Page):
 
         # Verificar respuesta
         if response.get("success"):
-            user_data = response.get("user")
-            token = response.get("token")
-
-            # Guardar sesión
-            auth_context.login(token, user_data)
-
-            # Redirigir al dashboard
-            page.go("/dashboard")
-        else:
-            # Mostrar error general
             page.snack_bar = ft.SnackBar(
-                ft.Text("Credenciales incorrectas o usuario no encontrado."),
+                ft.Text("Registro exitoso. Ahora puedes iniciar sesión."),
                 open=True
             )
+            page.go("/login")  # ✅ redirige al login
+
+        else:
+            # Mostrar error general
+            error_msg = response.get("error", "Error al registrar usuario.")
+            page.snack_bar = ft.SnackBar(
+                ft.Text(error_msg),
+                open=True
+            )
+
         page.update()
 
     
@@ -88,13 +87,13 @@ def register_view(page: ft.Page):
     
     controles = [
             ft.Text("Registro", style=ft.TextStyle(size=24)),
-            ft.TextField(label="Cedula", autofocus=True),
-            ft.TextField(label="Nombre", autofocus=True),
-            ft.TextField(label="Apellido", autofocus=True),
-            ft.TextField(label="Correo Electrónico"),
-            ft.TextField(label="Contraseña", password=True),
-            ft.TextField(label="Confirmar Contraseña", password=True),
-            ft.ElevatedButton("Registrarse", on_click=register),
+            cedula_field,
+            name_field,
+            surname_field,
+            email_field,
+            password_field,
+            confirm_password_field,
+            ft.ElevatedButton("Registrarse", on_click=validate),
             ft.TextButton("¿Ya tienes una cuenta? Inicia Sesión", on_click=lambda e: page.go("/login")),
             ft.ElevatedButton("Volver al Inicio", on_click=lambda e: page.go("/"))
             ]

@@ -20,7 +20,11 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
         (User.cedula == user_data.cedula)
     ).first()
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email o cédula ya registrados")
+        return {
+            "success": False,
+            "error": "El correo o la cédula ya están registrados"
+        }
+
     
     # Hashear la contraseña
     hashed_password = pwd_context.hash(user_data.password)
@@ -38,7 +42,11 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {"message": "Registro exitoso"}
+    return {
+        "success": True,
+        "message": "Registro exitoso"
+    }
+
 
 @router.post("/login")
 def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
